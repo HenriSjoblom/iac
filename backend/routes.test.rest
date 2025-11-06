@@ -1,0 +1,75 @@
+
+@baseUrl = http://localhost:8000
+
+### Health Check
+GET {{baseUrl}}/health
+
+### Calculate Savings - Valid Request
+POST {{baseUrl}}/api/calculate-savings
+Content-Type: application/json
+
+{
+  "goal_amount": 10000,
+  "current_savings": 2000,
+  "years_to_save": 2
+}
+
+### Calculate Savings - Already Reached Goal
+POST {{baseUrl}}/api/calculate-savings
+Content-Type: application/json
+
+{
+  "goal_amount": 5000,
+  "current_savings": 6000,
+  "years_to_save": 1
+}
+
+### Calculate Savings - Zero Years (Invalid)
+POST {{baseUrl}}/api/calculate-savings
+Content-Type: application/json
+
+{
+  "goal_amount": 10000,
+  "current_savings": 0,
+  "years_to_save": 0
+}
+
+### Calculate Savings - Negative Values (Should return 400)
+POST {{baseUrl}}/api/calculate-savings
+Content-Type: application/json
+
+{
+  "goal_amount": -1000,
+  "current_savings": 500,
+  "years_to_save": 2
+}
+
+### Calculate Savings - Negative Current Savings (Should return 400)
+POST {{baseUrl}}/api/calculate-savings
+Content-Type: application/json
+
+{
+  "goal_amount": 10000,
+  "current_savings": -500,
+  "years_to_save": 2
+}
+
+### Calculate Savings - Negative Years (Should return 400)
+POST {{baseUrl}}/api/calculate-savings
+Content-Type: application/json
+
+{
+  "goal_amount": 10000,
+  "current_savings": 2000,
+  "years_to_save": -1
+}
+
+### Calculate Savings - Large Numbers
+POST {{baseUrl}}/api/calculate-savings
+Content-Type: application/json
+
+{
+  "goal_amount": 1000000,
+  "current_savings": 50000,
+  "years_to_save": 10
+}
