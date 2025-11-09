@@ -174,6 +174,10 @@ Your frontend is now running at `http://localhost:5173`. The `vite.config.ts` fi
 
 ## Non-Idealities & Missing Parts
 
+### No Authentication or Authorization
+
+The API is currently publicly accessible without any authentication. Anyone who discovers the API Gateway URL can make requests directly, bypassing CloudFront entirely. This poses security risks.
+
 ### CI/CD Security
 
 The GitHub Action uses long-lived IAM User keys (`AWS_ACCESS_KEY_ID`). A more secure, production-grade approach would be to use OIDC (OpenID Connect) with a short-lived IAM Role.
