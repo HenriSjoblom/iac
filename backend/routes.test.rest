@@ -1,5 +1,6 @@
 
-@baseUrl = http://localhost:8000
+#@baseUrl = http://localhost:8000
+@baseUrl =  https://akasjkcr0c.execute-api.eu-west-1.amazonaws.com/prod/
 
 ### Health Check
 GET {{baseUrl}}/health
