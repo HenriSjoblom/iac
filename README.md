@@ -4,9 +4,9 @@ This project is a full-stack web application with a React/Vite frontend and a Py
 
 The project supports two deployment methods:
 
-**Manual Deployment**: Deploy directly from your local machine using the AWS CDK CLI, ideal for development and testing.
+**Manual Deployment**: Deploy directly from your local machine using the AWS CDK CLI.
 
-**Automated CI/CD**: A pre-configured GitHub Actions workflow (`.github/workflows/deploy.yml`) automatically builds and deploys the entire stack when changes are pushed to the main branch, enabling hands-off production deployments.
+**Automated CI/CD**: A pre-configured GitHub Actions workflow (`.github/workflows/deploy.yml`) automatically builds and deploys the entire stack when changes are pushed to the main branch.
 
 The deployment is idempotent—re-running it will only apply updates without breaking the existing stack—and fully reproducible from the code in this repository.
 
@@ -132,9 +132,22 @@ cd infra
 cdk destroy
 ```
 
-## How to Run Locally
+## Non-Idealities & Missing Parts
 
-This project is configured for a seamless local development experience.
+### No Authentication or Authorization
+
+The API is currently publicly accessible without any authentication. Anyone who discovers the API Gateway URL can make requests directly, bypassing CloudFront entirely. This poses security risks.
+
+### CI/CD Security
+
+The GitHub Action uses long-lived IAM User keys (`AWS_ACCESS_KEY_ID`). A more secure, production-grade approach would be to use OIDC (OpenID Connect) with a short-lived IAM Role.
+
+### Log Retention
+
+The Lambda log groups are set to be destroyed (`logRemovalPolicy: cdk.RemovalPolicy.DESTROY`) when the stack is destroyed. For a production app, you would want to set this to `RETAIN` to keep your logs.
+
+
+## How to Run Locally
 
 ### Run the Backend
 
@@ -171,17 +184,3 @@ Your backend is now running at `http://localhost:8000`.
    ```
 
 Your frontend is now running at `http://localhost:5173`. The `vite.config.ts` file is configured to proxy all `/api` requests to your backend at `localhost:8000`.
-
-## Non-Idealities & Missing Parts
-
-### No Authentication or Authorization
-
-The API is currently publicly accessible without any authentication. Anyone who discovers the API Gateway URL can make requests directly, bypassing CloudFront entirely. This poses security risks.
-
-### CI/CD Security
-
-The GitHub Action uses long-lived IAM User keys (`AWS_ACCESS_KEY_ID`). A more secure, production-grade approach would be to use OIDC (OpenID Connect) with a short-lived IAM Role.
-
-### Log Retention
-
-The Lambda log groups are set to be destroyed (`logRemovalPolicy: cdk.RemovalPolicy.DESTROY`) when the stack is destroyed. For a production app, you would want to set this to `RETAIN` to keep your logs.
