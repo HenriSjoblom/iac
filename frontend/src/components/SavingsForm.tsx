@@ -38,7 +38,7 @@ export default function SavingsForm({ onSubmit, loading }: SavingsFormProps) {
             id="goalAmount"
             name="goalAmount"
             type="number"
-            step="0.01"
+            step="100"
             required
             className="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             placeholder="10000"
@@ -61,7 +61,7 @@ export default function SavingsForm({ onSubmit, loading }: SavingsFormProps) {
             id="currentSavings"
             name="currentSavings"
             type="number"
-            step="0.01"
+            step="100"
             required
             className="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             placeholder="500"
@@ -84,7 +84,7 @@ export default function SavingsForm({ onSubmit, loading }: SavingsFormProps) {
             id="yearsToSave"
             name="yearsToSave"
             type="number"
-            step="0.1"
+            step="1"
             required
             className="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             placeholder="2"

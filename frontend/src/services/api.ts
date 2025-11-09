@@ -1,6 +1,5 @@
 import type { SavingsRequest, SavingsResponse } from "../types/savings";
 
-
 export const calculateSavings = async (
   data: SavingsRequest
 ): Promise<SavingsResponse> => {
@@ -11,7 +10,9 @@ export const calculateSavings = async (
   });
 
   if (!response.ok) {
-    throw new Error("Network response was not ok");
+    const errorData = await response.json().catch(() => null);
+    const errorMessage = errorData?.detail || `Server error: ${response.status}`;
+    throw new Error(errorMessage);
   }
 
   return response.json();

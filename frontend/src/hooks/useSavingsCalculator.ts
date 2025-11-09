@@ -22,11 +22,13 @@ export const useSavingsCalculator = () => {
         current_savings: currentSavings,
         years_to_save: yearsToSave,
       });
-      console.log("Calculation result:", data);
       setResult(data);
     } catch (err) {
-      console.error("Fetch error:", err);
-      setError("Failed to calculate. Please ensure the backend is running.");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to calculate. Please ensure the backend is running."
+      );
     } finally {
       setLoading(false);
     }
