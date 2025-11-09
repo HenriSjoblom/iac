@@ -12,4 +12,13 @@ export default defineConfig({
     }),
     tailwindcss(),
   ],
+  server: {
+    proxy: {
+      // This proxies any request starting with "/api"
+      "/api": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+      },
+    },
+  },
 });
