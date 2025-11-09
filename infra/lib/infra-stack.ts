@@ -24,7 +24,7 @@ export class InfraStack extends cdk.Stack {
       "FastApiLambda",
       {
         code: lambda.DockerImageCode.fromImageAsset(
-          path.join(__dirname, "../../backend") // <-- Points to /backend
+          path.join(__dirname, "../../backend")
         ),
         memorySize: 512,
         timeout: cdk.Duration.seconds(30),
@@ -111,7 +111,6 @@ export class InfraStack extends cdk.Stack {
     });
 
     // 3. OUTPUTS
-
     new cdk.CfnOutput(this, "BackendApiUrl", {
       value: api.url,
       description: "The URL of the FastAPI backend",
