@@ -50,7 +50,7 @@ export class InfraStack extends cdk.Stack {
 
     // Parse the API Gateway URL
     const apiDomain = cdk.Fn.select(2, cdk.Fn.split("/", api.url));
-    const apiStage = cdk.Fn.select(3, cdk.Fn.split("/", api.url)); // This is 'prod'
+    const apiStage = cdk.Fn.select(3, cdk.Fn.split("/", api.url));
 
     // Create the CloudFront distribution
     const distribution = new cloudfront.Distribution(
@@ -96,13 +96,6 @@ export class InfraStack extends cdk.Stack {
         },
       }
     );
-
-    // Add CORS after CloudFront is created
-    api.root.addCorsPreflight({
-      allowOrigins: [`https://${distribution.distributionDomainName}`],
-      allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-      allowHeaders: ["Content-Type", "Authorization"],
-    });
 
     new s3deploy.BucketDeployment(this, "DeployReactApp", {
       sources: [
