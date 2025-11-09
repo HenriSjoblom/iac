@@ -17,7 +17,7 @@ async def calculate_savings(request: SavingsRequest):
     ):
         raise HTTPException(
             status_code=400,
-            detail="All values (goal_amount, current_savings, years_to_save) must be non-negative",
+            detail="All values must be non-negative",
         )
 
     # Calculate remaining amount needed

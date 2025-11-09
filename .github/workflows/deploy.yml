@@ -5,7 +5,7 @@ on:
     branches:
       - main
 
-  #This allows you to run it manually from the GitHub UI
+  #This allows to run manually from the GitHub UI
   workflow_dispatch:
 
 jobs:
@@ -29,7 +29,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       # Build the frontend
       - name: Build React/Vite Frontend
