@@ -1,0 +1,46 @@
+name: Deploy to AWS
+
+on:
+  push:
+    branches:
+      - main
+
+  #This allows you to run it manually from the GitHub UI
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks out your repository's code
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Sets up AWS credentials
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # Sets up Node.js (for frontend build and CDK)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Build the frontend
+      - name: Build React/Vite Frontend
+        run: |
+          cd frontend
+          npm ci
+          npm run build
+
+      # Deploy the CDK Stack
+      - name: Deploy CDK Stack
+        run: |
+          cd infra
+          npm ci
+          npx cdk deploy --all --require-approval never
