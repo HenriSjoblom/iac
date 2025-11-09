@@ -32,14 +32,10 @@ export class InfraStack extends cdk.Stack {
       }
     );
 
+    // Create API without CORS first
     const api = new apigateway.LambdaRestApi(this, "FastApiEndpoint", {
       handler: fastApiLambda,
       proxy: true,
-      defaultCorsPreflightOptions: {
-        allowOrigins: apigateway.Cors.ALL_ORIGINS,
-        allowMethods: apigateway.Cors.ALL_METHODS,
-        allowHeaders: ["Content-Type", "Authorization"],
-      },
     });
 
     // 2. FRONTEND: React/Vite + S3 + CloudFront
@@ -54,7 +50,7 @@ export class InfraStack extends cdk.Stack {
 
     // Parse the API Gateway URL
     const apiDomain = cdk.Fn.select(2, cdk.Fn.split("/", api.url));
-    const apiStage = cdk.Fn.select(3, cdk.Fn.split("/", api.url)); // This is 'prod'
+    const apiStage = cdk.Fn.select(3, cdk.Fn.split("/", api.url));
 
     // Create the CloudFront distribution
     const distribution = new cloudfront.Distribution(
@@ -89,7 +85,7 @@ export class InfraStack extends cdk.Stack {
         additionalBehaviors: {
           "/api/*": {
             origin: new origins.HttpOrigin(apiDomain, {
-              originPath: `/${apiStage}`, // This adds '/prod'
+              originPath: `/${apiStage}`,
             }),
             viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.HTTPS_ONLY,
             // Allow all methods (GET, POST, PUT, DELETE, etc.)
