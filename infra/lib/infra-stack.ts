@@ -13,10 +13,7 @@ export class InfraStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // ========================================================================
-    // 1. BACKEND: FastAPI + Docker Image + Lambda (Free Tier)
-    // ========================================================================
-
+    // 1. BACKEND: FastAPI + Docker Image + Lambda
     const logGroup = new logs.LogGroup(this, "FastApiLambdaLogs", {
       retention: logs.RetentionDays.ONE_WEEK,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
@@ -35,7 +32,6 @@ export class InfraStack extends cdk.Stack {
       }
     );
 
-    // The API Gateway part is IDENTICAL to the previous Lambda plan
     const api = new apigateway.LambdaRestApi(this, "FastApiEndpoint", {
       handler: fastApiLambda,
       proxy: true,
@@ -46,11 +42,9 @@ export class InfraStack extends cdk.Stack {
       },
     });
 
-    // ========================================================================
     // 2. FRONTEND: React/Vite + S3 + CloudFront
-    // ========================================================================
 
-    const websiteBucket = new s3.Bucket(this, "ReactViteAppBucket", {
+    const websiteBucket = new s3.Bucket(this, "ReactAppBucket", {
       publicReadAccess: false,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
@@ -58,11 +52,11 @@ export class InfraStack extends cdk.Stack {
       objectOwnership: s3.ObjectOwnership.BUCKET_OWNER_ENFORCED,
     });
 
-    // --- 1. Parse the API Gateway URL ---
+    // Parse the API Gateway URL
     const apiDomain = cdk.Fn.select(2, cdk.Fn.split("/", api.url));
     const apiStage = cdk.Fn.select(3, cdk.Fn.split("/", api.url)); // This is 'prod'
 
-    // --- 2. Create the CloudFront distribution ---
+    // Create the CloudFront distribution
     const distribution = new cloudfront.Distribution(
       this,
       "ReactViteAppDistribution",
@@ -82,7 +76,7 @@ export class InfraStack extends cdk.Stack {
           },
         ],
 
-        // --- 3. Set the DEFAULT behavior to S3 (for your React app) ---
+        // Set the default behavior to S3
         defaultBehavior: {
           origin: origins.S3BucketOrigin.withOriginAccessControl(websiteBucket),
           viewerProtocolPolicy:
@@ -91,7 +85,7 @@ export class InfraStack extends cdk.Stack {
           allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
         },
 
-        // --- 4. (NEW) Add an API behavior for '/api/*' ---
+        //  Add an API behavior for '/api/*'
         additionalBehaviors: {
           "/api/*": {
             origin: new origins.HttpOrigin(apiDomain, {
@@ -116,9 +110,7 @@ export class InfraStack extends cdk.Stack {
       distributionPaths: ["/*"],
     });
 
-    // ========================================================================
     // 3. OUTPUTS
-    // ========================================================================
 
     new cdk.CfnOutput(this, "BackendApiUrl", {
       value: api.url,
